@@ -13,12 +13,17 @@ app.get("/", (req, res) => {
 
 app.post("/merge", upload.array("pdfs", 12), async (req, res, next) => {
   console.log(req.files);
-  let d = await mergedPdf(
-    path.join(__dirname, req.files[0].path),
-    path.join(__dirname, req.files[1].path)
-  );
-  res.redirect(`http://localhost:3000/static/${d}.pdf`);
-  //   res.send({ data: req.files });
+
+  try {
+    let pdfPaths = req.files.map((file) => path.join(__dirname, file.path));
+
+    let d = await mergedPdf(pdfPaths);
+
+    res.redirect(`http://localhost:3000/static/${d}.pdf`);
+  } catch (error) {
+    console.error("Error while merging PDFs:", error);
+    res.status(500).send("Error while merging PDFs.");
+  }
 });
 
 app.listen(port, () => {

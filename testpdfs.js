@@ -2,15 +2,16 @@ const PDFMerger = require("pdf-merger-js");
 
 var merger = new PDFMerger();
 
-const mergedPdf = async (p1, p2) => {
+const mergedPdf = async (pdfPaths) => {
   var merger = new PDFMerger();
-  await merger.add(p1);
-  await merger.add(p2);
+
+  for (const path of pdfPaths) {
+    await merger.add(path);
+  }
+
   let d = new Date().getTime();
   await merger.save(`public/${d}.pdf`);
   return d;
-  return merger;
 };
 
-// Export the mergedPdf function
 module.exports = { mergedPdf };
